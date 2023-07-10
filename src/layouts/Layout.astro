@@ -13,11 +13,16 @@ const { title } = Astro.props;
 		<meta name="description" content="Astro description">
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<meta name="twitter:card" content="summary_large_image"/>
+		<meta name="twitter:site" content="@jgraphiczz"/>
+		<meta name="view-transition" content="same-origin" />
 	</head>
 	<body>
-		<slot />
+		<div id="content">
+			<slot />
+		</div>
+		
 	</body>
 </html>
 <style is:global>
@@ -27,10 +32,44 @@ const { title } = Astro.props;
 	}
 	html {
 		font-family: system-ui, sans-serif;
-		background-color: #F6F6F6;
+		background-color: #f5f5f5;
 	}
 	code {
 		font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
 			Bitstream Vera Sans Mono, Courier New, monospace;
 	}
+	@keyframes fade-in {
+		from { opacity: 0; }
+	}
 </style>
+	
+<script>
+	if (document.startViewTransition) {
+		window.navigation.addEventListener('navigate', (event) => {
+			const toUrl = new URL(event.destination.url)
+	
+			// es una página externa? si es así, lo ignoramos
+			if (location.origin !== toUrl.origin) return
+	
+			// si es una navegación en el mismo dominio (origen)
+			event.intercept({
+				async handler () {
+					// vamos a cargar la página de destino
+					// utilizando un fetch para obtener el HTML
+					const response = await fetch(toUrl.pathname) // /clean-code
+					const text = await response.text()
+					// quedarnos sólo con el contenido del html dentro de la etiqueta body
+					// usamos un regex para extraerlo
+					const [, data] = text.match(/<body>([\s\S]*)<\/body>/i)
+	
+					// utilizar la api de View Transition API
+					document.startViewTransition(() => {
+						// el scroll hacia arriba del todo
+						document.body.innerHTML = data
+						document.documentElement.scrollTop = 0
+					})
+				}
+			})
+		})
+	}
+</script>

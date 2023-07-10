@@ -1,0 +1,57 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { books } from "../data/books"
+const {book} = Astro.params
+
+const info = books.find(b => b.id === book)
+
+if(!info) {
+    return Astro.redirect ("404")
+}
+---
+
+<Layout title={`Servicios ${info.title}`}>
+    <main class="m-auto max-w-4xl">
+        <header>
+            <h1 
+                class=" font-black uppercase text-3xl md:text-3xl text-center py-8 px-4"
+                style="view-transition-name: title"
+            >
+            Jgraphiczz
+            </h1>
+        </header>
+        <div class="text-center mt-2 ">
+            
+            <a href="./" class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                    Volver Inicio
+                </span>
+            </a>                     
+            
+        </div>
+        <div class="grid grid-cols-[350px_1fr] gap-x-12 mt-20 justify-center p-9 mb-3 border">
+
+            <div class="flex flex-col">
+                <picture class="mb-8 w-full relative">
+                    <img 
+                        class="aspect-[389/500] h-full object-cover w-full max-w-full rounded" 
+                        src={info.img} 
+                        alt={`Portada del servicio${info.title}`}
+                        style={`view-transition-name: book-${info.id}`}
+                    />
+                </picture>
+            </div>
+            <aside>
+                <h1 class="text-5xl font-black mb-4">{info.title}</h1>
+                <p class="text-lg mb-4 text-justify">{info.servicio}</p>
+                <p><strong>{info.author} <span class="font-semibold text-gray-800"> Copyright</span>&copy;</strong></p>
+            </aside>
+        </div>
+        <div class="m-0 text-center flex flex-auto justify-center">            
+            <a href="mailto: jesusdavid@jgraphiczz.es" type="button" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+            Contactar
+            </a>
+        </div>
+            
+    </main>   
+</Layout>
